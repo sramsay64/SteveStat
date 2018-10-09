@@ -1,32 +1,54 @@
 #!/bin/zsh
 
+optionalCat() {
+	if [[ -f $1 ]]; then
+		cat $1
+	fi
+}
+
 SERVER="$(cat config/server)"
 PASSWRITE="$(cat config/passwordWrite)"
-PASSREAD="$(cat config/passwordWrite)"
+PASSREAD="$(optionalCat config/passwordRead)"
+
+MYPORT="$(optionalCat config/myport)"
+MYNAME="$(optionalCat config/myname)"
 
 ipaddr() {
 	ifconfig | grep "inet addr" | grep -v "127\.0\.0\.1" | sed "s/.*inet addr:\([0-9.]*\).*/\1/"
 }
 
-writeIP() {
-	curl "$SERVER?update=True&ip=$(ipaddr | tail -n1)&password=$PASSWRITE" -k
+writeInfo() {
+	curl 2>/dev/null "$SERVER?update=True&ip=$(ipaddr | tail -n1)&password=$PASSWRITE" -k
 }
 
-readIP() {
-	curl "$SERVER?password=$PASSREAD" -k
+readInfo() {
+	INFO=$(curl 2>/dev/null "$SERVER?password=$PASSREAD" -k)
+	echo $INFO
+}
+
+# Read the $1 attribute from the JSON
+readAttr() {
+	echo $INFO | jq -r ".$1"
 }
 
 if (( $# < 1 )); then
 	echo "Usage:"
-	echo "	stevestat.zsh read"
-	echo "	stevestat.zsh write"
-	echo "	stevestat.zsh ssh"
-	echo "	stevestat.zsh sftp"
+	echo "	stevestat.zsh read  [name]"
+	echo "	stevestat.zsh write [name]"
+	echo "	stevestat.zsh writeThis"
+	echo "	stevestat.zsh ssh   [name]"
+	echo "	stevestat.zsh sftp  [name]"
 	exit
 elif [[ $1 == "read" ]]; then
-	readIP
+	readInfo $2
 elif [[ $1 == "write" ]]; then
-	writeIP
+	writeInfo $2
+elif [[ $1 == "writeThis" ]]; then
+	writeInfo $MYNAME
 elif [[ $1 == "ssh" ]]; then
-	ssh $(readIP)
+	readInfo $2
+	ssh "$(readAttr ip)" -p "$(readAttr port)"
+elif [[ $1 == "sftp" ]]; then
+	readInfo $2
+	sftp -P "$(readAttr port)" "scott@$(readAttr ip)"
 fi
