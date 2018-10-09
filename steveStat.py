@@ -4,8 +4,14 @@
 
 import cherrypy
 
-writePassCode = 'icebound-snobby-shivery-dirties'
-readPassCode = ''
+def openConfig(filename):
+    try:
+        return open(filename).read().replace('\n', '')
+    except FileNotFoundError:
+        return ''
+
+writePassword = openConfig('config/passwordWrite')
+readPassword = openConfig('config/passwordRead')
 storedIP = ''
 
 class MainApp(object):
@@ -13,14 +19,14 @@ class MainApp(object):
         pass
 
     @cherrypy.expose
-    def index(self, passcode='', update=False, ip=None):
-        if passcode == writePassCode:
+    def index(self, password='', update=False, ip=None):
+        if password == writePassword:
             if update:
                 global storedIP
                 storedIP = ip
-        if passcode == readPassCode:
+        if password == readPassword:
             return storedIP
-        print(passcode, writePassCode)
+        print(password, writePassword)
 
     @cherrypy.expose
     def test(self):
