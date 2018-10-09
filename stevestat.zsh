@@ -1,18 +1,19 @@
 #!/bin/zsh
 
-SERVER="http://houghtondigital.com.au:8912/"
-PASS="icebound-snobby-shivery-dirties"
+SERVER="$(cat config/server)"
+PASSWRITE="$(cat config/passwordWrite)"
+PASSREAD="$(cat config/passwordWrite)"
 
 ipaddr() {
 	ifconfig | grep "inet addr" | grep -v "127\.0\.0\.1" | sed "s/.*inet addr:\([0-9.]*\).*/\1/"
 }
 
 writeIP() {
-	curl "$SERVER?update=True&ip=$(ipaddr | tail -n1)&passcode=$PASS" -k
+	curl "$SERVER?update=True&ip=$(ipaddr | tail -n1)&passcode=$PASSWRITE" -k
 }
 
 readIP() {
-	curl "$SERVER" -k
+	curl "$SERVER?passcode=$PASSREAD" -k
 }
 
 if (( $# < 1 )); then
@@ -20,6 +21,7 @@ if (( $# < 1 )); then
 	echo "	stevestat.zsh read"
 	echo "	stevestat.zsh write"
 	echo "	stevestat.zsh ssh"
+	echo "	stevestat.zsh sftp"
 	exit
 elif [[ $1 == "read" ]]; then
 	readIP
