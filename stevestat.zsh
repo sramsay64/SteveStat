@@ -6,7 +6,7 @@ optionalCat() {
 	fi
 }
 
-BASEPATH=$(dirname $0)
+BASEPATH=$(dirname $(readlink -f $0))
 
 SERVER="$(cat $BASEPATH/config/server)"
 PASSWRITE="$(optionalCat $BASEPATH/config/passwordWrite)"
