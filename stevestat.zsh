@@ -18,11 +18,11 @@ ipaddr() {
 }
 
 writeInfo() {
-	curl 2>/dev/null "$SERVER?update=True&ip=$(ipaddr | tail -n1)&password=$PASSWRITE" -k
+	curl 2>/dev/null "$SERVER?update=True&ip=$(ipaddr | tail -n1)&name=$1&port=$MYPORT&password=$PASSWRITE" -k
 }
 
 readInfo() {
-	INFO=$(curl 2>/dev/null "$SERVER?password=$PASSREAD" -k)
+	INFO=$(curl 2>/dev/null "$SERVER?password=$PASSREAD&name=$1" -k)
 	echo $INFO
 }
 
