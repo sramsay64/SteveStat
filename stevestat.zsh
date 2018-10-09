@@ -7,7 +7,7 @@ optionalCat() {
 }
 
 SERVER="$(cat config/server)"
-PASSWRITE="$(optioalCat config/passwordWrite)"
+PASSWRITE="$(optionalCat config/passwordWrite)"
 PASSREAD="$(optionalCat config/passwordRead)"
 
 MYPORT="$(optionalCat config/myport)"
