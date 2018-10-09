@@ -9,11 +9,11 @@ ipaddr() {
 }
 
 writeIP() {
-	curl "$SERVER?update=True&ip=$(ipaddr | tail -n1)&passcode=$PASSWRITE" -k
+	curl "$SERVER?update=True&ip=$(ipaddr | tail -n1)&password=$PASSWRITE" -k
 }
 
 readIP() {
-	curl "$SERVER?passcode=$PASSREAD" -k
+	curl "$SERVER?password=$PASSREAD" -k
 }
 
 if (( $# < 1 )); then
