@@ -26,6 +26,10 @@ readInfo() {
 	echo $INFO
 }
 
+list() {
+	curl 2>/dev/null "$SERVER/list?password=$PASSREAD" -k
+}
+
 # Read the $1 attribute from the JSON
 readAttr() {
 	echo $INFO | jq -r ".$1"
@@ -36,6 +40,7 @@ if (( $# < 1 )); then
 	echo "	stevestat.zsh read  [name]"
 	echo "	stevestat.zsh write [name]"
 	echo "	stevestat.zsh writeThis"
+	echo "	stevestat.zsh list"
 	echo "	stevestat.zsh ssh   [name]"
 	echo "	stevestat.zsh sftp  [name]"
 	exit
@@ -45,6 +50,8 @@ elif [[ $1 == "write" ]]; then
 	writeInfo $2
 elif [[ $1 == "writeThis" ]]; then
 	writeInfo $MYNAME
+elif [[ $1 == "list" ]]; then
+	list
 elif [[ $1 == "ssh" ]]; then
 	readInfo $2
 	ssh "$(readAttr ip)" -p "$(readAttr port)"
