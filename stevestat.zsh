@@ -6,12 +6,14 @@ optionalCat() {
 	fi
 }
 
-SERVER="$(cat config/server)"
-PASSWRITE="$(optionalCat config/passwordWrite)"
-PASSREAD="$(optionalCat config/passwordRead)"
+BASEPATH=$(dirname $0)
 
-MYPORT="$(optionalCat config/myport)"
-MYNAME="$(optionalCat config/myname)"
+SERVER="$(cat $BASEPATH/config/server)"
+PASSWRITE="$(optionalCat $BASEPATH/config/passwordWrite)"
+PASSREAD="$(optionalCat $BASEPATH/config/passwordRead)"
+
+MYPORT="$(optionalCat $BASEPATH/config/myport)"
+MYNAME="$(optionalCat $BASEPATH/config/myname)"
 
 ipaddr() {
 	ifconfig | grep "inet addr" | grep -v "127\.0\.0\.1" | sed "s/.*inet addr:\([0-9.]*\).*/\1/"
