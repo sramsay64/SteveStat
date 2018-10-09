@@ -51,6 +51,11 @@ class MainApp(object):
             print('Wrong password:', repr(password), '!=', repr(writePassword))
 
     @cherrypy.expose
+    def list(self, password=''):
+        if password == readPassword:
+            return json.JSONEncoder().encode([x for x in storedData.keys()])
+
+    @cherrypy.expose
     def test(self):
         return 'DEBUG TEST'
 
