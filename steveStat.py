@@ -43,8 +43,12 @@ class MainApp(object):
                 storedData[name] = Datum(ip, port, name)
                 print(storedData)
         if password == readPassword:
-            return storedData[name].asJSON()
-        print('Wrong password:', repr(password), '!=', repr(writePassword))
+            if name in storedData:
+                return storedData[name].asJSON()
+            else:
+                print('name', name, 'not in storedData')
+        else:
+            print('Wrong password:', repr(password), '!=', repr(writePassword))
 
     @cherrypy.expose
     def test(self):
