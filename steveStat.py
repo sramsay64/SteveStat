@@ -3,6 +3,7 @@
 # sudo ufw allow 8912
 
 import cherrypy
+import json
 
 def openConfig(filename):
     try:
@@ -12,21 +13,38 @@ def openConfig(filename):
 
 writePassword = openConfig('config/passwordWrite')
 readPassword = openConfig('config/passwordRead')
-storedIP = ''
+storedData = {}
+
+class Datum():
+    def __init__(self, ip, port, name):
+        self.ip = ip
+        self.port = port
+        self.name = name
+
+    def asDict(self):
+        return {
+            'ip':   self.ip,
+            'port': self.port,
+            'name': self.name
+        }
+
+    def asJSON(self):
+        return json.JSONEncoder().encode(self.asDict())
 
 class MainApp(object):
     def __init__(self):
         pass
 
     @cherrypy.expose
-    def index(self, password='', update=False, ip=None):
+    def index(self, password='', update=False, ip=None, port=None, name=''):
         if password == writePassword:
             if update:
-                global storedIP
-                storedIP = ip
+                global storedData
+                storedData[name] = Datum(ip, port, name)
+                print(storedData)
         if password == readPassword:
-            return storedIP
-        print(password, writePassword)
+            return storedData[name].asJSON()
+        print('Wrong password:', repr(password), '!=', repr(writePassword))
 
     @cherrypy.expose
     def test(self):
