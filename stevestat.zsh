@@ -14,13 +14,14 @@ PASSREAD="$(optionalCat $BASEPATH/config/passwordRead)"
 
 MYPORT="$(optionalCat $BASEPATH/config/myport)"
 MYNAME="$(optionalCat $BASEPATH/config/myname)"
+MYUSER="$(whoami)"
 
 ipaddr() {
 	ifconfig | grep "inet addr" | grep -v "127\.0\.0\.1" | sed "s/.*inet addr:\([0-9.]*\).*/\1/"
 }
 
 writeInfo() {
-	curl 2>/dev/null "$SERVER?update=True&ip=$(ipaddr | tail -n1)&name=$1&port=$MYPORT&password=$PASSWRITE" -k
+	curl 2>/dev/null "$SERVER?update=True&ip=$(ipaddr | tail -n1)&user=$MYUSER&name=$1&port=$MYPORT&password=$PASSWRITE" -k
 }
 
 readInfo() {
@@ -33,8 +34,19 @@ list() {
 }
 
 # Read the $1 attribute from the JSON
+# Requires that readInfo has already been called
 readAttr() {
 	echo $INFO | jq -r ".$1"
+}
+
+# Read the `user@ip` string (which could just be `ip` if there is no user)
+# Requires that readInfo has already been called
+getSSHAddress() {
+	if [[ "$(readAttr user)" != "" ]]; then
+		echo "$(readAttr user)@$(readAttr ip)"
+	else
+		echo "$(readAttr ip)"
+	fi
 }
 
 if (( $# < 1 )); then
@@ -56,8 +68,8 @@ elif [[ $1 == "list" ]]; then
 	list
 elif [[ $1 == "ssh" ]]; then
 	readInfo $2
-	ssh "$(readAttr ip)" -p "$(readAttr port)"
+	ssh "$(getSSHAddress)" -p "$(readAttr port)"
 elif [[ $1 == "sftp" ]]; then
 	readInfo $2
-	sftp -P "$(readAttr port)" "scott@$(readAttr ip)"
+	sftp -P "$(readAttr port)" "$(getSSHAddress)"
 fi
