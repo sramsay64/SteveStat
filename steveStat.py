@@ -16,16 +16,18 @@ readPassword = openConfig('config/passwordRead')
 storedData = {}
 
 class Datum():
-    def __init__(self, ip, port, name):
+    def __init__(self, ip, port, name, user):
         self.ip = ip
         self.port = port
         self.name = name
+        self.user = user
 
     def asDict(self):
         return {
             'ip':   self.ip,
             'port': self.port,
-            'name': self.name
+            'name': self.name,
+            'user': self.user
         }
 
     def asJSON(self):
@@ -36,11 +38,11 @@ class MainApp(object):
         pass
 
     @cherrypy.expose
-    def index(self, password='', update=False, ip=None, port=None, name=''):
+    def index(self, password='', update=False, ip=None, port=None, name='', user=''):
         if password == writePassword:
             if update:
                 global storedData
-                storedData[name] = Datum(ip, port, name)
+                storedData[name] = Datum(ip, port, name, user)
                 print(storedData)
         if password == readPassword:
             if name in storedData:
