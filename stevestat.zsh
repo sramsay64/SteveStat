@@ -94,7 +94,7 @@ elif [[ $1 == "listAll" ]]; then
 	(( LEN = $LEN - 1 ))
 	for i in {0..$LEN}; do
 		NAME=$(echo $LIST | jq -r ".[$i]")
-		readInfo $NAME | jq
+		readInfo $NAME | jq .
 	done
 elif [[ $1 == "ssh" ]]; then
 	readInfo $2
