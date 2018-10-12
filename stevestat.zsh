@@ -21,7 +21,7 @@ ipaddr() {
 }
 
 writeInfo() {
-	curl 2>/dev/null "$SERVER?update=True&ip=$(ipaddr | tail -n1)&user=$MYUSER&name=$1&port=$MYPORT&password=$PASSWRITE" -k
+	curl 2>/dev/null "$SERVER?password=$PASSWRITE&update=True&ip=$(ipaddr | tail -n1)&port=$MYPORT&name=$1&user=$MYUSER" -k
 }
 
 readInfo() {
