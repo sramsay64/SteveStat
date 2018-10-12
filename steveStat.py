@@ -4,6 +4,8 @@
 
 import cherrypy
 import json
+import time
+import datetime
 
 def openConfig(filename):
     try:
@@ -15,19 +17,30 @@ writePassword = openConfig('config/passwordWrite')
 readPassword = openConfig('config/passwordRead')
 storedData = {}
 
+def getTimeString(): # http://stackoverflow.com/questions/13890935/ddg#13891070
+    return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+
 class Datum():
-    def __init__(self, ip, port, name, user):
+    def __init__(self, ip, port, name, user, status, network, comment):
         self.ip = ip
         self.port = port
         self.name = name
         self.user = user
+        self.status = status
+        self.network = network
+        self.comment = comment
+        self.timestamp = getTimeString()
 
     def asDict(self):
         return {
             'ip':   self.ip,
             'port': self.port,
             'name': self.name,
-            'user': self.user
+            'user': self.user,
+            'status': self.status,
+            'network': self.network,
+            'comment': self.comment,
+            'timestamp': self.timestamp
         }
 
     def asJSON(self):
@@ -38,11 +51,11 @@ class MainApp(object):
         pass
 
     @cherrypy.expose
-    def index(self, password='', update=False, ip=None, port=None, name='', user=''):
+    def index(self, password='', update=False, ip=None, port=None, name='', user='', status='', network='', comment=''):
         if password == writePassword:
             if update:
                 global storedData
-                storedData[name] = Datum(ip, port, name, user)
+                storedData[name] = Datum(ip, port, name, user, status, network, comment)
                 print(storedData)
         if password == readPassword:
             if name in storedData:
