@@ -17,11 +17,17 @@ MYNAME="$(optionalCat $BASEPATH/config/myname)"
 MYUSER="$(whoami)"
 
 ipaddr() {
-	ifconfig | grep "inet addr" | grep -v "127\.0\.0\.1" | sed "s/.*inet addr:\([0-9.]*\).*/\1/"
+	ifconfig | grep "inet addr" | grep -v "127\.0\.0\.1" | sed "s/.*inet addr:\([0-9.]*\).*/\1/" | tail -n1
+}
+
+status() {
+}
+
+network() {
 }
 
 writeInfo() {
-	curl 2>/dev/null "$SERVER?password=$PASSWRITE&update=True&ip=$(ipaddr | tail -n1)&port=$MYPORT&name=$1&user=$MYUSER" -k
+	curl 2>/dev/null "$SERVER?password=$PASSWRITE&update=True&ip=$(ipaddr)&port=$MYPORT&name=$1&user=$MYUSER&status=$(status)&network=$(network)&comment=$2" -k
 }
 
 readInfo() {
@@ -52,9 +58,9 @@ getSSHAddress() {
 if (( $# < 1 )); then
 	echo "Usage:"
 	echo "	stevestat.zsh read  [name]"
-	echo "	stevestat.zsh write [name]"
-	echo "	stevestat.zsh writeThis"
-	echo "	stevestat.zsh writeThisWhile	[delay]"
+	echo "	stevestat.zsh write [name]	[comment]"
+	echo "	stevestat.zsh writeThis	[comment]"
+	echo "	stevestat.zsh writeThisWhile	[delay	[comment]]"
 	echo "	stevestat.zsh list"
 	echo "	stevestat.zsh listAll"
 	echo "	stevestat.zsh ssh   [name]"
@@ -65,10 +71,10 @@ elif [[ $1 == "read" ]]; then
 elif [[ $1 == "write" ]]; then
 	writeInfo $2
 elif [[ $1 == "writeThis" ]]; then
-	writeInfo $MYNAME
+	writeInfo $MYNAME $2
 elif [[ $1 == "writeThisWhile" ]]; then
 	while :; do
-		writeInfo $MYNAME
+		writeInfo $MYNAME $3
 		sleep $2
 	done
 elif [[ $1 == "list" ]]; then
