@@ -6,6 +6,12 @@ optionalCat() {
 	fi
 }
 
+optionalExec() {
+	if [[ -f $1 ]]; then
+		source $1
+	fi
+}
+
 BASEPATH=$(dirname $(readlink -f $0))
 
 SERVER="$(cat $BASEPATH/config/server)"
@@ -21,9 +27,12 @@ ipaddr() {
 }
 
 status() {
+	optionalExec "$BASEPATH/config/mystatus.zsh" | sed 's/%/%25/g;s/ /%20/g'
 }
 
+# Find the section of ifconfigs output that ipaddr got it's ip from and print it's interface name
 network() {
+	ifconfig | grep -zPo ".*\n.*$(ipaddr)." | tr -d '\0' | grep -o '^[^ ]*'
 }
 
 writeInfo() {
