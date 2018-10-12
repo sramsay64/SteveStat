@@ -55,6 +55,7 @@ if (( $# < 1 )); then
 	echo "	stevestat.zsh write [name]"
 	echo "	stevestat.zsh writeThis"
 	echo "	stevestat.zsh list"
+	echo "	stevestat.zsh listAll"
 	echo "	stevestat.zsh ssh   [name]"
 	echo "	stevestat.zsh sftp  [name]"
 	exit
@@ -66,6 +67,14 @@ elif [[ $1 == "writeThis" ]]; then
 	writeInfo $MYNAME
 elif [[ $1 == "list" ]]; then
 	list
+elif [[ $1 == "listAll" ]]; then
+	LIST="$(list)"
+	LEN="$(echo $LIST | jq length)"
+	(( LEN = $LEN - 1 ))
+	for i in {0..$LEN}; do
+		NAME=$(echo $LIST | jq -r ".[$i]")
+		readInfo $NAME | jq
+	done
 elif [[ $1 == "ssh" ]]; then
 	readInfo $2
 	ssh "$(getSSHAddress)" -p "$(readAttr port)"
