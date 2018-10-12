@@ -58,7 +58,7 @@ getSSHAddress() {
 if (( $# < 1 )); then
 	echo "Usage:"
 	echo "	stevestat.zsh read  [name]"
-	echo "	stevestat.zsh write [name]	[comment]"
+	echo "	stevestat.zsh write [name	[comment]]"
 	echo "	stevestat.zsh writeThis	[comment]"
 	echo "	stevestat.zsh writeThisWhile	[delay	[comment]]"
 	echo "	stevestat.zsh list"
