@@ -57,7 +57,7 @@ class MainApp(object):
                 global storedData
                 storedData[name] = Datum(ip, port, name, user, status, network, comment)
                 print(storedData)
-        if password == readPassword:
+        elif password == readPassword:
             if name in storedData:
                 return storedData[name].asJSON()
             else:
