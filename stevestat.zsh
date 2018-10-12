@@ -54,6 +54,7 @@ if (( $# < 1 )); then
 	echo "	stevestat.zsh read  [name]"
 	echo "	stevestat.zsh write [name]"
 	echo "	stevestat.zsh writeThis"
+	echo "	stevestat.zsh writeThisWhile	[delay]"
 	echo "	stevestat.zsh list"
 	echo "	stevestat.zsh listAll"
 	echo "	stevestat.zsh ssh   [name]"
@@ -65,6 +66,11 @@ elif [[ $1 == "write" ]]; then
 	writeInfo $2
 elif [[ $1 == "writeThis" ]]; then
 	writeInfo $MYNAME
+elif [[ $1 == "writeThisWhile" ]]; then
+	while :; do
+		writeInfo $MYNAME
+		sleep $2
+	done
 elif [[ $1 == "list" ]]; then
 	list
 elif [[ $1 == "listAll" ]]; then
