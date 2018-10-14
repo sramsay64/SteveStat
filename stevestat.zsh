@@ -66,14 +66,15 @@ getSSHAddress() {
 
 if (( $# < 1 )); then
 	echo "Usage:"
-	echo "	stevestat.zsh read  [name]"
-	echo "	stevestat.zsh write [name	[comment]]"
+	echo "	stevestat.zsh read  name"
+	echo "	stevestat.zsh write name	[comment]"
 	echo "	stevestat.zsh writeThis	[comment]"
-	echo "	stevestat.zsh writeThisWhile	[delay	[comment]]"
+	echo "	stevestat.zsh writeThisWhile	delay	[comment]"
 	echo "	stevestat.zsh list"
 	echo "	stevestat.zsh listAll"
-	echo "	stevestat.zsh ssh   [name]"
-	echo "	stevestat.zsh sftp  [name]"
+	echo "	stevestat.zsh ssh   name"
+	echo "	stevestat.zsh sftp  name"
+	echo "	stevestat.zsh wget  name	[port]"
 	exit
 elif [[ $1 == "read" ]]; then
 	readInfo $2
@@ -102,4 +103,11 @@ elif [[ $1 == "ssh" ]]; then
 elif [[ $1 == "sftp" ]]; then
 	readInfo $2
 	sftp -P "$(readAttr port)" "$(getSSHAddress)"
+elif [[ $1 == "wget" ]]; then
+	readInfo $2
+	ADDR="$(readAttr ip)"
+	if (( $# > 2 )); then # optional port
+		ADDR="$ADDR:$3"
+	fi
+	wget --content-disposition "$ADDR"
 fi
