@@ -30,13 +30,17 @@ status() {
 	optionalExec "$BASEPATH/config/mystatus.zsh" | sed 's/%/%25/g;s/ /%20/g'
 }
 
+clock() {
+	date | sed 's/%/%25/g;s/ /%20/g'
+}
+
 # Find the section of ifconfigs output that ipaddr got it's ip from and print it's interface name
 network() {
 	ifconfig | grep -zPo ".*\n.*$(ipaddr)." | tr -d '\0' | grep -o '^[^ ]*'
 }
 
 writeInfo() {
-	curl 2>/dev/null "$SERVER?password=$PASSWRITE&update=True&ip=$(ipaddr)&port=$MYPORT&name=$1&user=$MYUSER&status=$(status)&network=$(network)&comment=$2" -k
+	curl 2>/dev/null "$SERVER?password=$PASSWRITE&update=True&ip=$(ipaddr)&port=$MYPORT&name=$1&user=$MYUSER&status=$(status)&network=$(network)&clock=$(clock)&comment=$2" -k
 }
 
 readInfo() {
