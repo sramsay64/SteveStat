@@ -21,13 +21,14 @@ def getTimeString(): # http://stackoverflow.com/questions/13890935/ddg#13891070
     return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 
 class Datum():
-    def __init__(self, ip, port, name, user, status, network, comment):
+    def __init__(self, ip, port, name, user, status, network, clock, comment):
         self.ip = ip
         self.port = port
         self.name = name
         self.user = user
         self.status = status
         self.network = network
+        self.clock = clock
         self.comment = comment
         self.timestamp = getTimeString()
 
@@ -39,6 +40,7 @@ class Datum():
             'user': self.user,
             'status': self.status,
             'network': self.network,
+            'clock': self.clock,
             'comment': self.comment,
             'timestamp': self.timestamp
         }
@@ -54,11 +56,11 @@ class MainApp(object):
         pass
 
     @cherrypy.expose
-    def index(self, password='', update=False, ip=None, port=None, name='', user='', status='', network='', comment=''):
+    def index(self, password='', update=False, ip=None, port=None, name='', user='', status='', network='', clock='', comment=''):
         if password == writePassword:
             if update:
                 global storedData
-                storedData[name] = Datum(ip, port, name, user, status, network, comment)
+                storedData[name] = Datum(ip, port, name, user, status, network, clock, comment)
                 print(storedData)
         elif password == readPassword:
             if name in storedData:
