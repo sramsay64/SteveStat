@@ -46,6 +46,9 @@ class Datum():
     def asJSON(self):
         return json.JSONEncoder().encode(self.asDict())
 
+    def __repr__(self):
+        return self.asJSON()
+
 class MainApp(object):
     def __init__(self):
         pass
