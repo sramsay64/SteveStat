@@ -12,7 +12,16 @@ optionalExec() {
 	fi
 }
 
-BASEPATH=$(dirname $(readlink -f $0))
+# Patch for mac, where readlink has no -f option
+readlinkF() {
+	RESULT="$@"
+	while [[ -L "$RESULT" ]]; do # While RESULT is a symlink
+		RESULT="$(readlink $RESULT)"
+	done
+	echo $RESULT
+}
+
+BASEPATH=$(dirname $(readlinkF $0))
 
 SERVER="$(cat $BASEPATH/config/server)"
 PASSWRITE="$(optionalCat $BASEPATH/config/passwordWrite)"
