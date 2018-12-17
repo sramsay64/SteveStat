@@ -56,8 +56,13 @@ network() {
 	fi
 }
 
+writeInfoRaw() {
+	echo $@
+	curl "$1?password=$2&update=True&ip=$3&port=$4&name=$5&user=$6&status=$7&network=$8&clock=$9&comment=$10" -k
+}
+
 writeInfo() {
-	curl 2>/dev/null "$SERVER?password=$PASSWRITE&update=True&ip=$(ipaddr)&port=$MYPORT&name=$1&user=$MYUSER&status=$(status)&network=$(network)&clock=$(clock)&comment=$2" -k
+	writeInfoRaw "$SERVER" "$PASSWRITE" "$(ipaddr)" "$MYPORT" "$1" "$MYUSER" "$(status)" "$(network)" "$(clock)" "$2"
 }
 
 readInfo() {
@@ -96,6 +101,7 @@ if (( $# < 1 )); then
 	echo "	stevestat.zsh ssh   name"
 	echo "	stevestat.zsh sftp  name"
 	echo "	stevestat.zsh wget  name	[port]"
+	echo "	stevestat.zsh raw	server password ipaddr port name user status network clock [comment]"
 	exit
 elif [[ $1 == "read" ]]; then
 	readInfo $2
@@ -131,4 +137,7 @@ elif [[ $1 == "wget" ]]; then
 		ADDR="$ADDR:$3"
 	fi
 	wget --content-disposition "$ADDR"
+elif [[ $1 == "raw" ]]; then
+	shift
+	writeInfoRaw $@
 fi
