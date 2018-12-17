@@ -32,7 +32,11 @@ MYNAME="$(optionalCat $BASEPATH/config/myname)"
 MYUSER="$(whoami)"
 
 ipaddr() {
-	ifconfig | grep "inet addr" | grep -v "127\.0\.0\.1" | sed "s/.*inet addr:\([0-9.]*\).*/\1/" | tail -n1
+	if [[ $(uname) == "Darwin" ]] then
+		ifconfig | grep "inet " | grep -v "127\.0\.0\.1" | sed "s/.*inet \([0-9.]*\).*/\1/" | tail -n1
+	else
+		ifconfig | grep "inet addr" | grep -v "127\.0\.0\.1" | sed "s/.*inet addr:\([0-9.]*\).*/\1/" | tail -n1
+	fi
 }
 
 status() {
@@ -45,7 +49,11 @@ clock() {
 
 # Find the section of ifconfigs output that ipaddr got it's ip from and print it's interface name
 network() {
-	ifconfig | grep -zPo ".*\n.*$(ipaddr)." | tr -d '\0' | grep -o '^[^ ]*'
+	if [[ $(uname) == "Darwin" ]] then
+		/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I | sed -e 's/^ *SSID: \(.*\)/\1/p' -e d
+	else
+		ifconfig | grep -zPo ".*\n.*$(ipaddr)." | tr -d '\0' | grep -o '^[^ ]*'
+	fi
 }
 
 writeInfo() {
