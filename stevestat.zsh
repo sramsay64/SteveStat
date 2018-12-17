@@ -120,7 +120,7 @@ elif [[ $1 == "listAll" ]]; then
 	done
 elif [[ $1 == "ssh" ]]; then
 	readInfo $2
-	ssh "$(getSSHAddress)" -p "$(readAttr port)"
+	ssh $3 "$(getSSHAddress)" -p "$(readAttr port)"
 elif [[ $1 == "sftp" ]]; then
 	readInfo $2
 	sftp -P "$(readAttr port)" "$(getSSHAddress)"
