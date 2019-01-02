@@ -131,4 +131,7 @@ elif [[ $1 == "wget" ]]; then
 		ADDR="$ADDR:$3"
 	fi
 	wget --content-disposition "$ADDR"
+elif [[ $1 == "filezilla" ]] || [[ $1 == "zilla" ]]; then
+	readInfo $2
+	filezilla "sftp://$(getSSHAddress):$(readAttr port)"
 fi
