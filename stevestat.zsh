@@ -101,6 +101,8 @@ if (( $# < 1 )); then
 	echo "	stevestat.zsh ssh   name"
 	echo "	stevestat.zsh sftp  name"
 	echo "	stevestat.zsh wget  name	[port]"
+	echo "	stevestat.zsh filezilla  name"
+	echo "	stevestat.zsh zilla  name"
 	echo "	stevestat.zsh raw	server password ipaddr port name user status network clock [comment]"
 	exit
 elif [[ $1 == "read" ]]; then
