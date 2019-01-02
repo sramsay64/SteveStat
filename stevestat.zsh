@@ -90,7 +90,7 @@ getSSHAddress() {
 	fi
 }
 
-if (( $# < 1 )); then
+usage() {
 	echo "Usage:"
 	echo "	stevestat.zsh read  name"
 	echo "	stevestat.zsh write name	[comment]"
@@ -104,7 +104,10 @@ if (( $# < 1 )); then
 	echo "	stevestat.zsh filezilla  name"
 	echo "	stevestat.zsh zilla  name"
 	echo "	stevestat.zsh raw	server password ipaddr port name user status network clock [comment]"
-	exit
+}
+
+if (( $# < 1 )) || [[ $1 == "help" ]]; then
+	usage
 elif [[ $1 == "read" ]]; then
 	readInfo $2
 elif [[ $1 == "write" ]]; then
@@ -145,4 +148,7 @@ elif [[ $1 == "filezilla" ]] || [[ $1 == "zilla" ]]; then
 elif [[ $1 == "raw" ]]; then
 	shift
 	writeInfoRaw $@
+else
+	echo "Unknown command: $1"
+	usage
 fi
