@@ -144,7 +144,11 @@ elif [[ $1 == "wget" ]]; then
 	wget --content-disposition "$ADDR"
 elif [[ $1 == "filezilla" ]] || [[ $1 == "zilla" ]]; then
 	readInfo $2
-	filezilla "sftp://$(getSSHAddress):$(readAttr port)"
+	if [[ "$(uname)" == "Darwin" ]] then
+		open /Applications/FileZilla.app --args "sftp://$(getSSHAddress):$(readAttr port)"
+	else
+		filezilla "sftp://$(getSSHAddress):$(readAttr port)"
+	fi;
 elif [[ $1 == "raw" ]]; then
 	shift
 	writeInfoRaw $@
