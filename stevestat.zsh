@@ -145,9 +145,9 @@ elif [[ $1 == "wget" ]]; then
 elif [[ $1 == "filezilla" ]] || [[ $1 == "zilla" ]]; then
 	readInfo $2
 	if [[ "$(uname)" == "Darwin" ]] then
-		open /Applications/FileZilla.app --args "sftp://$(getSSHAddress):$(readAttr port)"
+		open /Applications/FileZilla.app --args "sftp://$(getSSHAddress):$(readAttr port)" --local "$(pwd)"
 	else
-		filezilla "sftp://$(getSSHAddress):$(readAttr port)"
+		filezilla "sftp://$(getSSHAddress):$(readAttr port)" --local "$(pwd)"
 	fi;
 elif [[ $1 == "raw" ]]; then
 	shift
